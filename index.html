@@ -11,6 +11,17 @@
       var eCanvas = document.getElementsByTagName("canvas")[0];
       var ctx = eCanvas.getContext("2d");
 
+      ctx.fillText("Olá Mundo!", 10,10);
+
+      ctx.fillStyle = "blue";
+      ctx.fillRect(20, 50, 15, 15);
+      ctx.lineWidth = 2;
+      ctx.strokeRect(20, 50, 15, 15);
+
+      ctx.fillStyle = "red";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(120, 50, 15, 15);
+      ctx.fillRect(120, 50, 15, 15);
     </script>
   </body>
 </html>
