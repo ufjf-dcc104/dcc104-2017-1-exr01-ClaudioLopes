@@ -5,14 +5,14 @@ function Sprite(){
   this.vy = 0;
   this.ax = 0;
   this.ay = 0;
-  this.color = "blue"
+  this.color = "blue";
 }
 
 Sprite.prototype.desenhar = function(ctx){
   ctx.fillcolor = this.color;
   ctx.fillRect(this.x, this.y, 15,15);
-  ctx.strokeStyle = "black"
-  ctx.strokeRect(this.x, this.y,15,15)
+  ctx.strokeStyle = "black";
+  ctx.strokeRect(this.x, this.y,15,15);
 };
 
 Sprite.prototype.mover = function(dt){
