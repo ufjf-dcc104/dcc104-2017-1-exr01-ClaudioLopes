@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title> DCC104 - Exemplo 01</title>
     <script src="Sprite.js" charset = "utf-8"></script>
+    <script src="level.js" charset = "utf-8"></script>
   </head>
   <body>
     <h1> DCC - Exemplo 01</h1>
@@ -11,23 +12,25 @@
     <script>
       var eCanvas = document.getElementsByTagName("canvas")[0];
       var ctx = eCanvas.getContext("2d");
-      eCanvas.width = 1000;
+      eCanvas.width = 500;
       eCanvas.height = 500;
 
 
       var azul = new Sprite();
       var rx = Math.floor(Math.random() * 1000);
       var ry = Math.floor(Math.random() * 500);
-      var helpx = rx;
-      var helpy = ry;
+      //var helpx = rx;
+      //var helpy = ry;
       var fuel = 100;
       var fps = 160;
       var atual = new Date();
       var anterior = new Date();
       var dt = 1/fps;
-      var acelerandoX = false;
-      var acelerandoY = false;
       var enemy = new Sprite();
+      var level = new level();
+      level.inimigos = 3;
+      level.init();
+
 
 
       desenha();
@@ -37,27 +40,23 @@
         requestAnimationFrame(desenha);
         atual = new Date();
         dt = (atual - anterior)/1000;
-        ctx.clearRect(0,0, eCanvas.width, eCanvas.height)
-        ctx.fillStyle = "darkgreen";
-        ctx.fillText("dt:" +dt+"fps:" +Math.floor(1/dt), 10,10);
-        ctx.fillStyle = "green";
-        ctx.fillRect(20,20,fuel,5);
-        ctx.strokeRect(20,20,fuel,5);
-        ctx.strokeStyle = "black";
-        ctx.strokeRect(0, 0,eCanvas.width,eCanvas.height);
+        ctx.clearRect(0,0, eCanvas.width, eCanvas.height);
 
-        if(acelerandoX && fuel>0){
-          fuel = fuel -5*dt;
-        }
-        if(acelerandoY && fuel>0){
-          fuel = fuel -5*dt;
-        }
-        azul.desenhar(ctx);
+        level.perseguir(azul,dt);
+
         azul.mover(dt);
-        ctx.fillStyle = "blue";
-        ctx.fillRect(helpx,helpy,30,30);
-        ctx.fillStyle = "red";
-        enemy.desenhar(ctx);
+        level.mover(dt);
+
+        level.colidiuCom(azul, function(inimigo,alvo){
+          inimigo.color = "red";
+        });
+
+        azul.desenhar(ctx);
+        level.desenhar(ctx);
+        //ctx.fillStyle = "blue";
+        //ctx.fillRect(helpx,helpy,30,30);
+        //ctx.fillStyle = "red";
+        //enemy.desenhar(ctx);
 
         if(azul.y > 500 || azul.y < 0){
           azul.y = 0;
@@ -80,12 +79,12 @@
           azul.x = 0;
         }
 
-        if(azul.x >= helpx && azul.x <= helpx+30 && azul.y >= helpy && azul.y <= helpy+30){
+        /*if(azul.x >= helpx && azul.x <= helpx+30 && azul.y >= helpy && azul.y <= helpy+30){
           fuel = fuel + 10;
           ctx.clearRect(50, 50, 30,30);
           helpx = Math.floor(Math.random() * 1000);
           helpy = Math.floor(Math.random() * 500);
-        }
+        }*/
         anterior = atual;
       }
 
@@ -97,19 +96,15 @@
             break;*/
           case 37:
             azul.ax = -100;
-            acelerandoX = true;
             break;
           case 38:
             azul.ay = -100;
-            acelerandoY = true;
             break;
           case 39:
             azul.ax = +100;
-            acelerandoX = true;
             break;
           case 40:
             azul.ay = +100;
-            acelerandoY = true;
             break;
           default:
 
@@ -120,19 +115,15 @@
         switch (e.keyCode) {
           case 37:
             azul.ax = -0;
-            acelerandoX = false;
             break;
           case 38:
             azul.ay = -0;
-            acelerandoY = false;
             break;
           case 39:
             azul.ax = +0;
-            acelerandoX = false;
             break;
           case 40:
             azul.ay = +0;
-            acelerandoY = false;
             break;
           default:
 
