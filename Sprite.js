@@ -1,5 +1,5 @@
 function Sprite(){
-  this.g= 0
+  this.g = 0;
   this.x = 0;
   this.y = 0;
   this.vx = 0;
@@ -9,12 +9,13 @@ function Sprite(){
   this.am = 0;
   this.width = 15;
   this.height = 15;
-  this.angle =0;
+  this.angle = 0;
   this.vang = 0;
   this.color = "blue";
+  this.cooldown = 0;
 }
 
-Sprite.prototype.desenhar = function(ctx){
+Sprite.prototype.desenhar = function (ctx) {
   ctx.save();
   ctx.translate(this.x, this.y);
   ctx.rotate(this.angle*2*Math.PI/360);
@@ -25,22 +26,27 @@ Sprite.prototype.desenhar = function(ctx){
   ctx.lineTo(+this.width/2, 0);
   ctx.closePath();
   ctx.fill();
-  ctx.strokeStyle = "black"
+  ctx.strokeStyle = "black";
   ctx.stroke();
   ctx.strokeStyle = "grey";
-  ctx.strokeRect(-this.width/2, -this.height/2,this.width,this.height);
+  ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
   ctx.restore();
 };
 
-Sprite.prototype.mover = function(dt){
+Sprite.prototype.mover = function (dt) {
   this.vx = this.vx + this.ax*dt;
   this.vy = this.vy + (this.ay+this.g)*dt;
   this.x = this.x + this.vx*dt;
   this.y = this.y + this.vy*dt;
   this.angle = this.angle + this.vang*dt;
+  if(this.cooldown>0) {
+    this.cooldown -= dt;
+  } else {
+    this.cooldown = 0;
+  }
 };
 
-Sprite.prototype.moverAng = function(dt){
+Sprite.prototype.moverAng = function (dt) {
   this.angle = this.angle + this.vang*dt;
   this.ax = this.am*Math.cos(Math.PI*this.angle/180);
   this.ay = this.am*Math.sin(Math.PI*this.angle/180);
@@ -48,9 +54,15 @@ Sprite.prototype.moverAng = function(dt){
   this.vy = this.vy + (this.ay+this.g)*dt;
   this.x = this.x + this.vx*dt;
   this.y = this.y + this.vy*dt;
+  if(this.cooldown>0) {
+    this.cooldown -= dt;
+  } else {
+    this.cooldown = 0;
+  }
 };
 
-Sprite.prototype.colidiuCom = function(alvo){
+
+Sprite.prototype.colidiuCom = function (alvo) {
   if(this.x+this.width < alvo.x) return false;
   if(this.x > alvo.x+this.width) return false;
   if(this.y+this.height < alvo.y) return false;
@@ -58,15 +70,15 @@ Sprite.prototype.colidiuCom = function(alvo){
   return true;
 };
 
-Sprite.prototype.perseguir = function(alvo,dt){
-  this.ax = dt*(alvo.x - this.x)*10 - 0.05*this.vx;
-  this.ay = dt*(alvo.y - this.y)*10 - 0.05*this.vy;
+Sprite.prototype.perseguir = function (alvo, dt) {
+  this.ax = 10*dt*(alvo.x - this.x) - 0.05*this.vx;
+  this.ay = 10*dt*(alvo.y - this.y) - 0.05*this.vy;
 };
 
-Sprite.prototype.perseguirAng = function(alvo,dt){
-  var dx = alvo.x - this.x;
-  var dy = alvo.y - this.y;
-  var dist = Math.sqrt(dx*dx + dy*dy);
-  var da = 180*Math.acos(dx/dist)/Math.PI;
-  this.vang = 100*(da - this.angle)*dt;
+Sprite.prototype.perseguirAng = function (alvo, dt) {
+  var dX = alvo.x - this.x;
+  var dY = alvo.y - this.y;
+  var dist = Math.sqrt(dX*dX+dY*dY);
+  var dA = 180*Math.acos(dX/dist)/Math.PI;
+  this.vang = 100*(dA - this.angle)*dt;
 };
